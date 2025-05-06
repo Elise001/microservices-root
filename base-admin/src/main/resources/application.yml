@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: admin
+  cloud:
+    nacos:
+      discovery: # Nacos注册中心
+        server-addr: 127.0.0.1:8848
+        group: default # 隔离标识
+        namespace: public
+      username: nacos
+      password: nacos
+
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8070/xxl-job-admin
+    executor:
+      appname: admin-executor
+      port: 9999
+    accessToken: default_token

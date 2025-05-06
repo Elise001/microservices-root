@@ -1,0 +1,16 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: gate
+  cloud:
+    nacos:
+      discovery: # Nacos注册中心
+        server-addr: 127.0.0.1:8848
+        group: default # 隔离标识
+        namespace: public
+#      config: # Nacos配置中心
+#        namespace: public
+      username: nacos
+      password: nacos
