@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: admin
+    name: demo
   cloud:
     nacos:
       discovery: # Nacos注册中心
@@ -27,7 +27,7 @@ spring:
           max-wait: 5s # 连接池最大阻塞等待时间（负数表示无限制）
   rabbitmq:
     host: localhost
-    port: 15672
+    port: 5672
     username: guest
     password: guest
     virtual-host: /  # 使用默认的虚拟主机

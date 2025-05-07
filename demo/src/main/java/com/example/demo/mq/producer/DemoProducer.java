@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * 生产者
  */
 @Service
-public class MessageProducer {
+public class DemoProducer {
 //    // Field 注入提示警告
 //    @Autowired
 //    private RabbitTemplate;

@@ -4,8 +4,10 @@
 #### 3.Maven不低于3.5
 #### 4.Redis 6.2.6
 #### 5.Nacos 3.0
-#### 6.SpringCloud 2023
+#### 6.SpringCloud & Alibaba 2023
 #### 7.SpringBoot 3.2.5
+
+#### 8.xxl-job 3.0
 
 ### 注意事项
 #### 1.在启动项目之前，请先启动Nacos、redis

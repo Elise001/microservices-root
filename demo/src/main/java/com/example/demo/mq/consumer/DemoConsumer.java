@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  * 消费者
  */
 @Service
-public class MessageConsumer {
+public class DemoConsumer {
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void receive(String message) {

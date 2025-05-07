@@ -12,12 +12,17 @@ spring:
         namespace: public
       username: nacos
       password: nacos
-
-xxl:
-  job:
-    admin:
-      addresses: http://localhost:8070/xxl-job-admin
-    executor:
-      appname: admin-executor
-      port: 9999
-    accessToken: default_token
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      #password: 123456
+      database: 0 # Redis数据库索引（默认0）
+      timeout: 3s # 连接超时时间（毫秒）
+      client-type: lettuce
+      lettuce:
+        pool:
+          max-active: 8 # 最大连接数
+          max-idle: 8  # 最大空闲连接
+          min-idle: 0 # 最小空闲连接
+          max-wait: 5s # 连接池最大阻塞等待时间（负数表示无限制）
