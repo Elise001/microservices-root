@@ -14,3 +14,81 @@ spring:
 #        namespace: public
       username: nacos
       password: nacos
+    gateway:
+      routes:
+        - id: admin_route
+          uri: lb://admin      # Nacos 中注册的服务名，也可以用url:端口号代表
+          predicates:
+            - Path=/admin/**
+          filters:
+            - StripPrefix=1  # 去掉服务前缀，一定要加
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10  # 每秒最多 10 个请求
+                redis-rate-limiter.burstCapacity: 20  # 最大瞬时 20 个请求
+                key-resolver: "#{@ipKeyResolver}"  # 使用自定义的 KeyResolver
+            - name: CircuitBreaker
+              args:
+                name: adminCB  # 断路器名称
+                fallbackUri: forward:/fallback/admin  # 断路器降级后回调的接口
+
+        - id: demo_route
+          uri: lb://demo
+          predicates:
+            - Path=/demo/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@ipKeyResolver}"
+            - name: CircuitBreaker
+              args:
+                name: demoCB
+                fallbackUri: forward:/fallback/demo
+
+    # 哨兵 配置
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+
+  # Redis
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+# 熔断配置
+resilience4j:
+  circuitbreaker:
+    instances:
+      adminCB:
+        registerHealthIndicator: true # 开启健康检查
+        slidingWindowSize: 10 # 滑动窗口大小
+        failureRateThreshold: 50 # 失败率阈值
+        waitDurationInOpenState: 10s # 熔断器从开启状态到半开状态等待的时间
+      demoCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10
+
+# 链路追踪配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  #  开启 Actuator 所有端点，便于服务监控与健康探针
+  endpoint:
+    health:
+      show-details: always  # 显示详细信息
+  tracing:
+    sampling:
+      probability: 1.0  # 采样率
+    propagation:
+      type: w3c  # 传播类型
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans  # zipkin服务端地址
