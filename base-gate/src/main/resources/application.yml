@@ -27,10 +27,6 @@ spring:
                 redis-rate-limiter.replenishRate: 10  # 每秒最多 10 个请求
                 redis-rate-limiter.burstCapacity: 20  # 最大瞬时 20 个请求
                 key-resolver: "#{@ipKeyResolver}"  # 使用自定义的 KeyResolver
-            - name: CircuitBreaker
-              args:
-                name: adminCB  # 断路器名称
-                fallbackUri: forward:/fallback/admin  # 断路器降级后回调的接口
 
         - id: demo_route
           uri: lb://demo
@@ -43,10 +39,6 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
                 key-resolver: "#{@ipKeyResolver}"
-            - name: CircuitBreaker
-              args:
-                name: demoCB
-                fallbackUri: forward:/fallback/demo
 
     # 哨兵 配置
     sentinel:
@@ -63,17 +55,21 @@ spring:
 # 熔断配置
 resilience4j:
   circuitbreaker:
-    instances:
-      adminCB:
-        registerHealthIndicator: true # 开启健康检查
-        slidingWindowSize: 10 # 滑动窗口大小
-        failureRateThreshold: 50 # 失败率阈值
-        waitDurationInOpenState: 10s # 熔断器从开启状态到半开状态等待的时间
-      demoCB:
-        registerHealthIndicator: true
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10
+    configs:
+      default:
+        failureRateThreshold: 50 # 失败率阈值，50%
+        slidingWindowType: COUNT_BASED # 滑动窗口类型，基于计数
+        slidingWindowSize: 6 # 滑动窗口大小，6
+        minimumNumberOfCalls: 6 # 最小请求数量，6
+        automaticTransitionFromOpenToHalfOpenEnabled: true # 从打开状态自动过渡到半开状态
+        waitDurationInOpenState: 5s # 熔断器打开状态的等待时间
+        permittedNumberOfCallsInHalfOpenState: 2 # 半开状态下的允许调用次数
+        recordExceptions: # 记录异常类型
+          - java.lang.Exception
+    instances: # 实例配置
+      cloud-payment-service: # 熔断实例名
+        baseConfig: default
+
 
 # 链路追踪配置
 management:

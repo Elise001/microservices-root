@@ -17,13 +17,6 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>spring-releases</id>-->
-<!--            <name>Spring Releases</name>-->
-<!--            <url>https://repo.spring.io/release</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
 
     <dependencies>
         <!-- gateway 网关 -->
@@ -31,15 +24,18 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
+
         <!-- gateway 熔断支持：Resilience4j -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-circuitbreaker</artifactId>-->
-<!--        </dependency>-->
+
+        <!-- 断路保护等需要AOP实现，所以必须导入AOP包 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 
         <!-- 服务注册与发现 -->
         <dependency>
@@ -80,7 +76,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>
