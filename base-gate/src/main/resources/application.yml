@@ -29,7 +29,7 @@ spring:
                 key-resolver: "#{@ipKeyResolver}"  # 使用自定义的 KeyResolver
 
         - id: demo_route
-          uri: lb://demo
+          uri: http://127.0.0.1:8081
           predicates:
             - Path=/demo/**
           filters:
